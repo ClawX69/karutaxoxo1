@@ -1,2 +1,2 @@
 heroku ps:scale worker=1
-worker: python3 testbot.py
+worker: python3 main.py
