@@ -624,9 +624,9 @@ async def rundate(img_url, msg, need_ring, uid):
         report = report + f"Appearance of the best solution: path {bestsolution['iteration']}\n"
 
         for i in range(len(bestsolution["moves"])-1):
-            solution = solution + denotations[bestsolution["moves"][i]] + ", " + " "
+            solution = solution + denotations[bestsolution["moves"][i]] + ", "
             solutionemoji = solutionemoji + location_emojis[bestsolution["moves"][i]] + " "
-        solution = solution + denotations[bestsolution["moves"][-1]] + "."
+        solution = solution + denotations[bestsolution["moves"][-1]]
         solutionemoji = solutionemoji + location_emojis[bestsolution["moves"][-1]] + " "
 
         apearned = math.ceil(sum(bestsolution["resources"][1:]) * len(bestsolution["moves"])/ 25 / 6)
@@ -707,6 +707,17 @@ class datesolve(commands.Cog):
         need_ring = 1
         kvi_cond = False
         if not message.embeds == []:
+            if "Date Minigame" not in message.embeds[0].title:
+                return
+            if message.author.id != 646937666251915264:
+                return
+            desp = message.embeds[0].description
+            cnamelist = desp.split("·")
+            cname = cnamelist[2].split("\n")
+            cardnamelist = cname[0].split("**")
+            cardname = cardnamelist[1]
+            cardcodelist = cname[0].split("`")
+            cardcode = cardcodelist[1]
             if not message.embeds[0].image.url == discord.Embed.Empty:
                 # karuta kvi
                 try:
@@ -740,20 +751,20 @@ class datesolve(commands.Cog):
         run_success, sendembed, report = await rundate(imurl, message, need_ring, uid)
 
         if run_success:
-            sendembed.set_footer(text = f"{'React below to get route without ring | ' if 'ring' in sendembed.description else ''}Requested by : {str(memn)}")
+            sendembed.set_footer(text = f"Requested by : {str(memn)} | Card - {cardname} ({cardcode})")
             sentmsg = await message.reply(content=str(memn.mention), embed=sendembed)
             lastrunlink = sentmsg.jump_url
             if "ring" in sendembed.description:
                 await sentmsg.add_reaction("noring:873958263752900658")
                 try:
-                    rct, usr = await self.client.wait_for("reaction_add", check=self.checkm(self.client.user.id, "<:noring:873958263752900658>", sentmsg.id), timeout=40)
+                    rct, usr = await self.client.wait_for("reaction_add", check=self.checkm(self.client.user.id, "<:noring:873958263752900658>", sentmsg.id), timeout=20)
                 except Exception as e:
                     # timeout
                     return
                 run_success, sendembed, report = await rundate(imurl, message, 0, uid)
                 if not run_success:
                     return
-                sendembed.set_footer(text = f"Requested by : {str(memn)}")
+                sendembed.set_footer(text = f"Requested by : {str(memn)} | Card - {cardname} ({cardcode})")
                 sentmsg = await message.reply(content=str(memn.mention), embed=sendembed)
                 lastrunlink = sentmsg.jump_url
             else:
