@@ -13,7 +13,7 @@ async def on_ready():
 setup_date(bot)
 @bot.listen()
 async def on_message(message):
-    if message.channel.id not in [894832773821517874
+    if message.channel.id not in [894832773821517874]:
         return
     if message.author.id != 861628000227164190:
         return
